@@ -11,7 +11,9 @@ import android.graphics.BitmapFactory
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
+import android.graphics.Rect
 import android.graphics.RectF
+import android.graphics.pdf.PdfDocument
 import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
@@ -43,6 +45,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.chip.Chip
+import com.google.android.material.chip.ChipGroup
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.materialswitch.MaterialSwitch
 import com.google.android.material.progressindicator.CircularProgressIndicator
@@ -79,6 +82,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var etName: TextInputEditText
     private lateinit var chipPdf: Chip
     private lateinit var chipPng: Chip
+    private lateinit var chipFilter: ChipGroup
     private lateinit var swGallery: MaterialSwitch
     private lateinit var rvRecent: RecyclerView
     private lateinit var tvRecentEmpty: TextView
@@ -126,6 +130,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         setupScanButton()
+        setupFilter()
         findViewById<MaterialButton>(R.id.btnSeeAll).setOnClickListener {
             bottomNav.selectedItemId = R.id.nav_history
         }
@@ -183,6 +188,7 @@ class MainActivity : AppCompatActivity() {
         etName = findViewById(R.id.etName)
         chipPdf = findViewById(R.id.chipPdf)
         chipPng = findViewById(R.id.chipPng)
+        chipFilter = findViewById(R.id.chipFilter)
         swGallery = findViewById(R.id.swGallery)
         rvRecent = findViewById(R.id.rvRecent)
         tvRecentEmpty = findViewById(R.id.tvRecentEmpty)
@@ -290,6 +296,30 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    private val prefs by lazy { getSharedPreferences("pengaturan", MODE_PRIVATE) }
+
+    private fun setupFilter() {
+        val saved = Enhancer.Mode.from(prefs.getString("filter", null))
+        chipFilter.check(chipIdFor(saved))
+        chipFilter.setOnCheckedStateChangeListener { _, _ ->
+            prefs.edit().putString("filter", currentMode().key).apply()
+        }
+    }
+
+    private fun chipIdFor(m: Enhancer.Mode) = when (m) {
+        Enhancer.Mode.ORIGINAL -> R.id.fOriginal
+        Enhancer.Mode.GRAY -> R.id.fGray
+        Enhancer.Mode.BW -> R.id.fBw
+        Enhancer.Mode.MAGIC -> R.id.fMagic
+    }
+
+    private fun currentMode() = when (chipFilter.checkedChipId) {
+        R.id.fOriginal -> Enhancer.Mode.ORIGINAL
+        R.id.fGray -> Enhancer.Mode.GRAY
+        R.id.fBw -> Enhancer.Mode.BW
+        else -> Enhancer.Mode.MAGIC
+    }
+
     private fun setBusy(busy: Boolean) {
         progress.visibility = if (busy) View.VISIBLE else View.GONE
         scanContent.visibility = if (busy) View.INVISIBLE else View.VISIBLE
@@ -330,6 +360,7 @@ class MainActivity : AppCompatActivity() {
     private fun saveResult(result: GmsDocumentScanningResult) {
         val wantPdf = chipPdf.isChecked
         val wantPng = chipPng.isChecked
+        val mode = currentMode()
         val typed = etName.text?.toString()?.trim().orEmpty()
         val stamp = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(Date())
         val label = typed.ifEmpty { "Scan $stamp" }
@@ -343,7 +374,10 @@ class MainActivity : AppCompatActivity() {
                 val pngUris = arrayListOf<String>()
                 var thumbPath: String? = null
 
-                if (wantPdf) {
+                val pages = result.pages.orEmpty()
+                // Mode "Asli": pakai PDF bawaan pemindai. Mode lain: PDF dibuat dari gambar yang sudah diolah.
+                val ownPdf = if (wantPdf && mode != Enhancer.Mode.ORIGINAL) PdfDocument() else null
+                if (wantPdf && ownPdf == null) {
                     result.pdf?.uri?.let { src ->
                         pdfUri = copyToMediaStore(
                             src, "$base.pdf", "application/pdf",
@@ -353,11 +387,18 @@ class MainActivity : AppCompatActivity() {
                     }
                 }
 
-                val pages = result.pages.orEmpty()
                 pages.forEachIndexed { i, page ->
-                    val bmp = contentResolver.openInputStream(page.imageUri)?.use {
-                        BitmapFactory.decodeStream(it)
+                    runOnUiThread {
+                        tvScanHint.text = if (mode == Enhancer.Mode.ORIGINAL) "Menyimpan halaman ${i + 1}/${pages.size}..."
+                        else "✨ Mengolah halaman ${i + 1}/${pages.size}..."
+                    }
+                    val opts = BitmapFactory.Options().apply { inMutable = true }
+                    val raw = contentResolver.openInputStream(page.imageUri)?.use {
+                        BitmapFactory.decodeStream(it, null, opts)
                     } ?: return@forEachIndexed
+                    val bmp = Enhancer.apply(raw, mode)
+                    if (bmp !== raw) raw.recycle()
+                    ownPdf?.let { addPdfPage(it, bmp, i + 1) }
                     if (wantPng) {
                         val name = if (pages.size == 1) "$base.png"
                         else "${base}_hal%02d.png".format(i + 1)
@@ -365,6 +406,11 @@ class MainActivity : AppCompatActivity() {
                     }
                     if (i == 0) thumbPath = saveThumb(bmp, id)
                     bmp.recycle()
+                }
+
+                ownPdf?.let { doc ->
+                    pdfUri = writePdf(doc, "$base.pdf")
+                    doc.close()
                 }
 
                 val item = ScanItem(
@@ -387,7 +433,7 @@ class MainActivity : AppCompatActivity() {
                     btnScan.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS)
                     showSheet(item, true)
                 }
-            } catch (e: Exception) {
+            } catch (e: Throwable) {
                 runOnUiThread {
                     setBusy(false)
                     toast("Gagal menyimpan: ${e.message}")
@@ -430,6 +476,36 @@ class MainActivity : AppCompatActivity() {
         contentResolver.openOutputStream(dest)?.use { out ->
             bmp.compress(Bitmap.CompressFormat.PNG, 100, out)
         }
+        values.clear()
+        values.put(MediaStore.MediaColumns.IS_PENDING, 0)
+        contentResolver.update(dest, values, null, null)
+        return dest
+    }
+
+    /** Tambah satu halaman ke PDF. Lebar halaman A4 (595 pt), tinggi mengikuti rasio gambar. */
+    private fun addPdfPage(doc: PdfDocument, bmp: Bitmap, number: Int) {
+        val maxSide = 2400
+        val ratio = maxSide.toFloat() / maxOf(bmp.width, bmp.height)
+        val img = if (ratio >= 1f) bmp else Bitmap.createScaledBitmap(
+            bmp, (bmp.width * ratio).toInt(), (bmp.height * ratio).toInt(), true
+        )
+        val pw = 595
+        val ph = (pw * img.height.toFloat() / img.width).toInt().coerceAtLeast(1)
+        val page = doc.startPage(PdfDocument.PageInfo.Builder(pw, ph, number).create())
+        page.canvas.drawBitmap(img, null, Rect(0, 0, pw, ph), Paint(Paint.FILTER_BITMAP_FLAG))
+        doc.finishPage(page)
+        if (img !== bmp) img.recycle()
+    }
+
+    private fun writePdf(doc: PdfDocument, name: String): Uri? {
+        val values = ContentValues().apply {
+            put(MediaStore.MediaColumns.DISPLAY_NAME, name)
+            put(MediaStore.MediaColumns.MIME_TYPE, "application/pdf")
+            put(MediaStore.MediaColumns.RELATIVE_PATH, Environment.DIRECTORY_DOWNLOADS + "/Rextor Scanner")
+            put(MediaStore.MediaColumns.IS_PENDING, 1)
+        }
+        val dest = contentResolver.insert(MediaStore.Downloads.EXTERNAL_CONTENT_URI, values) ?: return null
+        contentResolver.openOutputStream(dest)?.use { doc.writeTo(it) }
         values.clear()
         values.put(MediaStore.MediaColumns.IS_PENDING, 0)
         contentResolver.update(dest, values, null, null)
