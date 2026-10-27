@@ -1,0 +1,13 @@
+<resources>
+    <color name="primary">#0B4F8A</color>
+    <color name="primary_dark">#083A66</color>
+    <color name="bg">#F3F6FA</color>
+    <color name="text_muted">#5B6B7C</color>
+
+    <style name="Theme.Scanner" parent="Theme.Material3.Light.NoActionBar">
+        <item name="colorPrimary">@color/primary</item>
+        <item name="colorOnPrimary">#FFFFFF</item>
+        <item name="android:statusBarColor">@color/primary_dark</item>
+        <item name="android:windowBackground">@color/bg</item>
+    </style>
+</resources>
