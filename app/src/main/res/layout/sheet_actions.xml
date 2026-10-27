@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:paddingBottom="16dp">
+
+    <!-- Kepala lembar -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingStart="20dp"
+        android:paddingTop="8dp"
+        android:paddingEnd="20dp"
+        android:paddingBottom="12dp">
+
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="72dp"
+            android:layout_height="92dp"
+            app:cardCornerRadius="12dp"
+            app:cardElevation="0dp"
+            app:strokeColor="#EFE6E6"
+            app:strokeWidth="1dp">
+
+            <ImageView
+                android:id="@+id/ivSheetThumb"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/bg_thumb"
+                android:scaleType="centerCrop" />
+        </com.google.android.material.card.MaterialCardView>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tvSheetTag"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="6dp"
+                android:background="@drawable/bg_tag"
+                android:paddingStart="10dp"
+                android:paddingTop="3dp"
+                android:paddingEnd="10dp"
+                android:paddingBottom="3dp"
+                android:text="✓ Berhasil disimpan"
+                android:textColor="#3A2A00"
+                android:textSize="11sp"
+                android:textStyle="bold"
+                android:visibility="gone" />
+
+            <TextView
+                android:id="@+id/tvSheetTitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:maxLines="2"
+                android:textColor="@color/text_main"
+                android:textSize="17sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/tvSheetMeta"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:textColor="@color/text_muted"
+                android:textSize="13sp" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <com.google.android.material.divider.MaterialDivider
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="4dp" />
+
+    <LinearLayout android:id="@+id/actOpenPdf" style="@style/ActionRow">
+        <ImageView style="@style/ActionIcon" android:src="@drawable/ic_open" />
+        <TextView style="@style/ActionText" android:text="Buka PDF" />
+    </LinearLayout>
+
+    <LinearLayout android:id="@+id/actSharePdf" style="@style/ActionRow">
+        <ImageView style="@style/ActionIcon" android:src="@drawable/ic_share" />
+        <TextView style="@style/ActionText" android:text="Kirim PDF" />
+    </LinearLayout>
+
+    <LinearLayout android:id="@+id/actViewImage" style="@style/ActionRow">
+        <ImageView style="@style/ActionIcon" android:src="@drawable/ic_image" />
+        <TextView style="@style/ActionText" android:text="Lihat gambar PNG" />
+    </LinearLayout>
+
+    <LinearLayout android:id="@+id/actSharePng" style="@style/ActionRow">
+        <ImageView style="@style/ActionIcon" android:src="@drawable/ic_share" />
+        <TextView style="@style/ActionText" android:text="Kirim PNG" />
+    </LinearLayout>
+
+    <LinearLayout android:id="@+id/actRename" style="@style/ActionRow">
+        <ImageView style="@style/ActionIcon" android:src="@drawable/ic_edit" />
+        <TextView style="@style/ActionText" android:text="Ganti nama" />
+    </LinearLayout>
+
+    <LinearLayout android:id="@+id/actDelete" style="@style/ActionRow">
+        <ImageView style="@style/ActionIcon" android:src="@drawable/ic_delete" />
+        <TextView
+            style="@style/ActionText"
+            android:text="Hapus"
+            android:textColor="@color/ferrari"
+            android:textStyle="bold" />
+    </LinearLayout>
+</LinearLayout>

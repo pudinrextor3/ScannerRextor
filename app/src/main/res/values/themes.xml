@@ -1,13 +1,53 @@
 <resources>
-    <color name="primary">#0B4F8A</color>
-    <color name="primary_dark">#083A66</color>
-    <color name="bg">#F3F6FA</color>
-    <color name="text_muted">#5B6B7C</color>
+    <!-- Palet Rosso Corsa (merah Ferrari) -->
+    <color name="ferrari">#D40000</color>
+    <color name="ferrari_dark">#9E0000</color>
+    <color name="ferrari_deep">#6A0000</color>
+    <color name="ferrari_soft">#FFE3E0</color>
+    <color name="ferrari_yellow">#FFD100</color>
+    <color name="bg">#F6F3F3</color>
+    <color name="text_main">#1C1717</color>
+    <color name="text_muted">#776B6B</color>
+    <color name="badge_dark">#2A2424</color>
 
     <style name="Theme.Scanner" parent="Theme.Material3.Light.NoActionBar">
-        <item name="colorPrimary">@color/primary</item>
+        <item name="colorPrimary">@color/ferrari</item>
         <item name="colorOnPrimary">#FFFFFF</item>
-        <item name="android:statusBarColor">@color/primary_dark</item>
+        <item name="colorPrimaryContainer">@color/ferrari_soft</item>
+        <item name="colorOnPrimaryContainer">@color/ferrari_deep</item>
+        <item name="colorSecondaryContainer">@color/ferrari_soft</item>
+        <item name="colorOnSecondaryContainer">@color/ferrari_deep</item>
+        <item name="colorSurface">#FFFFFF</item>
+        <item name="android:statusBarColor">@color/ferrari_dark</item>
+        <item name="android:navigationBarColor">#FFFFFF</item>
+        <item name="android:windowLightNavigationBar">true</item>
         <item name="android:windowBackground">@color/bg</item>
+    </style>
+
+    <!-- Baris aksi di lembar bawah -->
+    <style name="ActionRow">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">56dp</item>
+        <item name="android:orientation">horizontal</item>
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:paddingStart">20dp</item>
+        <item name="android:paddingEnd">20dp</item>
+        <item name="android:clickable">true</item>
+        <item name="android:focusable">true</item>
+        <item name="android:background">?attr/selectableItemBackground</item>
+    </style>
+
+    <style name="ActionIcon">
+        <item name="android:layout_width">24dp</item>
+        <item name="android:layout_height">24dp</item>
+        <item name="android:layout_marginEnd">18dp</item>
+        <item name="tint">@color/ferrari</item>
+    </style>
+
+    <style name="ActionText">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textSize">15sp</item>
+        <item name="android:textColor">@color/text_main</item>
     </style>
 </resources>

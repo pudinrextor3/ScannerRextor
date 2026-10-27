@@ -1,214 +1,459 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/root"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:layout_height="match_parent">
 
-    <!-- Header -->
-    <LinearLayout
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/primary"
-        android:orientation="vertical"
-        android:paddingStart="20dp"
-        android:paddingTop="24dp"
-        android:paddingEnd="20dp"
-        android:paddingBottom="20dp">
+        android:layout_height="match_parent"
+        android:layout_marginBottom="80dp">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/app_name"
-            android:textColor="#FFFFFF"
-            android:textSize="22sp"
-            android:textStyle="bold" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
-            android:text="Foto dokumen, simpan sebagai PDF dan PNG"
-            android:textColor="#D6E4F2"
-            android:textSize="14sp" />
-    </LinearLayout>
-
-    <ScrollView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-        <LinearLayout
+        <!-- ================= BERANDA ================= -->
+        <androidx.core.widget.NestedScrollView
+            android:id="@+id/pageHome"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:padding="16dp">
+            android:layout_height="match_parent"
+            android:fillViewport="true">
 
-            <!-- Pengaturan -->
-            <com.google.android.material.card.MaterialCardView
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:cardCornerRadius="14dp"
-                app:cardElevation="1dp"
-                app:strokeWidth="0dp">
+                android:orientation="vertical"
+                android:paddingBottom="24dp">
 
+                <!-- Header merah -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:background="@drawable/bg_header"
                     android:orientation="vertical"
-                    android:padding="16dp">
+                    android:paddingStart="22dp"
+                    android:paddingTop="28dp"
+                    android:paddingEnd="22dp"
+                    android:paddingBottom="96dp">
 
-                    <com.google.android.material.textfield.TextInputLayout
-                        style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
-                        android:layout_width="match_parent"
+                    <TextView
+                        android:id="@+id/tvGreeting"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:hint="Nama file (opsional)">
-
-                        <com.google.android.material.textfield.TextInputEditText
-                            android:id="@+id/etName"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:inputType="text"
-                            android:maxLines="1" />
-                    </com.google.android.material.textfield.TextInputLayout>
+                        android:text="Selamat datang"
+                        android:textColor="#FFD6D2"
+                        android:textSize="14sp" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="14dp"
-                        android:text="Simpan sebagai"
-                        android:textColor="@color/text_muted"
-                        android:textSize="13sp" />
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal">
-
-                        <com.google.android.material.checkbox.MaterialCheckBox
-                            android:id="@+id/cbPdf"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:checked="true"
-                            android:text="PDF" />
-
-                        <com.google.android.material.checkbox.MaterialCheckBox
-                            android:id="@+id/cbPng"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:checked="true"
-                            android:text="PNG" />
-                    </LinearLayout>
-
-                    <com.google.android.material.materialswitch.MaterialSwitch
-                        android:id="@+id/swGallery"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:checked="true"
-                        android:text="Boleh ambil dari galeri" />
-                </LinearLayout>
-            </com.google.android.material.card.MaterialCardView>
-
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/btnScan"
-                android:layout_width="match_parent"
-                android:layout_height="64dp"
-                android:layout_marginTop="16dp"
-                android:text="Scan Dokumen"
-                android:textSize="17sp"
-                app:cornerRadius="14dp" />
-
-            <ProgressBar
-                android:id="@+id/progress"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginTop="16dp"
-                android:visibility="gone" />
-
-            <!-- Hasil -->
-            <com.google.android.material.card.MaterialCardView
-                android:id="@+id/cardResult"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:visibility="gone"
-                app:cardCornerRadius="14dp"
-                app:cardElevation="1dp"
-                app:strokeWidth="0dp">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:padding="16dp">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Hasil scan terakhir"
-                        android:textSize="16sp"
+                        android:layout_marginTop="2dp"
+                        android:letterSpacing="0.02"
+                        android:text="@string/app_name"
+                        android:textColor="#FFFFFF"
+                        android:textSize="28sp"
                         android:textStyle="bold" />
 
-                    <ImageView
-                        android:id="@+id/ivPreview"
-                        android:layout_width="match_parent"
-                        android:layout_height="220dp"
-                        android:layout_marginTop="10dp"
-                        android:background="#E6ECF2"
-                        android:contentDescription="Pratinjau halaman pertama"
-                        android:scaleType="fitCenter" />
-
-                    <TextView
-                        android:id="@+id/tvResult"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="10dp"
-                        android:textColor="@color/text_muted"
-                        android:textSize="13sp" />
-
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="10dp"
+                        android:layout_marginTop="20dp"
                         android:orientation="horizontal">
 
-                        <com.google.android.material.button.MaterialButton
-                            android:id="@+id/btnOpenPdf"
-                            style="@style/Widget.Material3.Button.TonalButton"
+                        <LinearLayout
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_marginEnd="6dp"
                             android:layout_weight="1"
-                            android:text="Buka PDF" />
+                            android:background="@drawable/bg_glass"
+                            android:orientation="vertical"
+                            android:padding="14dp">
 
-                        <com.google.android.material.button.MaterialButton
-                            android:id="@+id/btnSharePdf"
-                            style="@style/Widget.Material3.Button.TonalButton"
+                            <TextView
+                                android:id="@+id/tvStatDocs"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="0"
+                                android:textColor="#FFFFFF"
+                                android:textSize="26sp"
+                                android:textStyle="bold" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Dokumen"
+                                android:textColor="#FFD6D2"
+                                android:textSize="13sp" />
+                        </LinearLayout>
+
+                        <LinearLayout
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="6dp"
                             android:layout_weight="1"
-                            android:text="Kirim PDF" />
-                    </LinearLayout>
+                            android:background="@drawable/bg_glass"
+                            android:orientation="vertical"
+                            android:padding="14dp">
 
-                    <com.google.android.material.button.MaterialButton
-                        android:id="@+id/btnSharePng"
-                        style="@style/Widget.Material3.Button.TonalButton"
+                            <TextView
+                                android:id="@+id/tvStatPages"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="0"
+                                android:textColor="#FFFFFF"
+                                android:textSize="26sp"
+                                android:textStyle="bold" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Halaman"
+                                android:textColor="#FFD6D2"
+                                android:textSize="13sp" />
+                        </LinearLayout>
+                    </LinearLayout>
+                </LinearLayout>
+
+                <!-- Tombol scan bulat, menumpang di tepi header -->
+                <FrameLayout
+                    android:layout_width="190dp"
+                    android:layout_height="190dp"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="-86dp">
+
+                    <View
+                        android:id="@+id/pulse"
+                        android:layout_width="150dp"
+                        android:layout_height="150dp"
+                        android:layout_gravity="center"
+                        android:alpha="0.35"
+                        android:background="@drawable/bg_pulse" />
+
+                    <FrameLayout
+                        android:id="@+id/btnScan"
+                        android:layout_width="150dp"
+                        android:layout_height="150dp"
+                        android:layout_gravity="center"
+                        android:background="@drawable/bg_scan_btn"
+                        android:clickable="true"
+                        android:contentDescription="Mulai scan"
+                        android:elevation="12dp"
+                        android:focusable="true"
+                        android:foreground="?attr/selectableItemBackgroundBorderless">
+
+                        <LinearLayout
+                            android:id="@+id/scanContent"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:gravity="center"
+                            android:orientation="vertical">
+
+                            <ImageView
+                                android:layout_width="52dp"
+                                android:layout_height="52dp"
+                                android:src="@drawable/ic_scan"
+                                app:tint="#FFFFFF" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="4dp"
+                                android:letterSpacing="0.15"
+                                android:text="SCAN"
+                                android:textColor="#FFFFFF"
+                                android:textSize="16sp"
+                                android:textStyle="bold" />
+                        </LinearLayout>
+
+                        <com.google.android.material.progressindicator.CircularProgressIndicator
+                            android:id="@+id/progress"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:indeterminate="true"
+                            android:visibility="gone"
+                            app:indicatorColor="#FFFFFF"
+                            app:indicatorSize="56dp"
+                            app:trackThickness="5dp" />
+                    </FrameLayout>
+                </FrameLayout>
+
+                <TextView
+                    android:id="@+id/tvScanHint"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:text="Ketuk untuk mulai memindai"
+                    android:textColor="@color/text_muted"
+                    android:textSize="13sp" />
+
+                <!-- Pengaturan -->
+                <com.google.android.material.card.MaterialCardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginEnd="16dp"
+                    app:cardBackgroundColor="#FFFFFF"
+                    app:cardCornerRadius="20dp"
+                    app:cardElevation="0dp"
+                    app:strokeColor="#EFE6E6"
+                    app:strokeWidth="1dp">
+
+                    <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Kirim PNG" />
-                </LinearLayout>
-            </com.google.android.material.card.MaterialCardView>
+                        android:orientation="vertical"
+                        android:padding="16dp">
 
-            <TextView
+                        <com.google.android.material.textfield.TextInputLayout
+                            style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:hint="Nama dokumen (opsional)"
+                            app:boxCornerRadiusBottomEnd="14dp"
+                            app:boxCornerRadiusBottomStart="14dp"
+                            app:boxCornerRadiusTopEnd="14dp"
+                            app:boxCornerRadiusTopStart="14dp"
+                            app:endIconMode="clear_text"
+                            app:startIconDrawable="@drawable/ic_edit"
+                            app:startIconTint="@color/ferrari">
+
+                            <com.google.android.material.textfield.TextInputEditText
+                                android:id="@+id/etName"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:inputType="textCapWords"
+                                android:maxLines="1" />
+                        </com.google.android.material.textfield.TextInputLayout>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="14dp"
+                            android:text="Simpan sebagai"
+                            android:textColor="@color/text_muted"
+                            android:textSize="13sp" />
+
+                        <com.google.android.material.chip.ChipGroup
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="4dp">
+
+                            <com.google.android.material.chip.Chip
+                                android:id="@+id/chipPdf"
+                                style="@style/Widget.Material3.Chip.Filter"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:checked="true"
+                                android:text="PDF"
+                                app:chipIcon="@drawable/ic_pdf"
+                                app:chipIconTint="@color/ferrari"
+                                app:chipIconVisible="true" />
+
+                            <com.google.android.material.chip.Chip
+                                android:id="@+id/chipPng"
+                                style="@style/Widget.Material3.Chip.Filter"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:checked="true"
+                                android:text="PNG"
+                                app:chipIcon="@drawable/ic_image"
+                                app:chipIconTint="@color/ferrari"
+                                app:chipIconVisible="true" />
+                        </com.google.android.material.chip.ChipGroup>
+
+                        <com.google.android.material.materialswitch.MaterialSwitch
+                            android:id="@+id/swGallery"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="4dp"
+                            android:checked="true"
+                            android:text="Boleh ambil dari galeri"
+                            android:textColor="@color/text_main" />
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
+
+                <!-- Terbaru -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="20dp"
+                    android:layout_marginTop="22dp"
+                    android:layout_marginEnd="8dp"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Scan terbaru"
+                        android:textColor="@color/text_main"
+                        android:textSize="18sp"
+                        android:textStyle="bold" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btnSeeAll"
+                        style="@style/Widget.Material3.Button.TextButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Lihat semua" />
+                </LinearLayout>
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rvRecent"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layoutAnimation="@anim/layout_enter"
+                    android:nestedScrollingEnabled="false"
+                    android:paddingStart="12dp"
+                    android:paddingEnd="12dp" />
+
+                <TextView
+                    android:id="@+id/tvRecentEmpty"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:padding="24dp"
+                    android:text="Belum ada dokumen. Ketuk tombol SCAN di atas."
+                    android:textColor="@color/text_muted"
+                    android:textSize="13sp" />
+            </LinearLayout>
+        </androidx.core.widget.NestedScrollView>
+
+        <!-- ================= RIWAYAT ================= -->
+        <LinearLayout
+            android:id="@+id/pageHistory"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:visibility="gone">
+
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
-                android:text="PDF tersimpan di folder Download/Scanner, PNG di Pictures/Scanner."
-                android:textColor="@color/text_muted"
-                android:textSize="12sp" />
+                android:background="@drawable/bg_header"
+                android:orientation="vertical"
+                android:paddingStart="20dp"
+                android:paddingTop="24dp"
+                android:paddingEnd="20dp"
+                android:paddingBottom="20dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Riwayat Scan"
+                    android:textColor="#FFFFFF"
+                    android:textSize="24sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/tvHistoryCount"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="0 dokumen"
+                    android:textColor="#FFD6D2"
+                    android:textSize="13sp" />
+
+                <com.google.android.material.textfield.TextInputLayout
+                    style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="14dp"
+                    android:hint="Cari dokumen"
+                    app:boxBackgroundColor="#FFFFFF"
+                    app:boxCornerRadiusBottomEnd="24dp"
+                    app:boxCornerRadiusBottomStart="24dp"
+                    app:boxCornerRadiusTopEnd="24dp"
+                    app:boxCornerRadiusTopStart="24dp"
+                    app:boxStrokeWidth="0dp"
+                    app:boxStrokeWidthFocused="0dp"
+                    app:endIconMode="clear_text"
+                    app:hintEnabled="false"
+                    app:startIconDrawable="@drawable/ic_search"
+                    app:startIconTint="@color/ferrari">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/etSearch"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="Cari dokumen"
+                        android:imeOptions="actionSearch"
+                        android:inputType="text"
+                        android:maxLines="1" />
+                </com.google.android.material.textfield.TextInputLayout>
+            </LinearLayout>
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1">
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rvHistory"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:clipToPadding="false"
+                    android:layoutAnimation="@anim/layout_enter"
+                    android:paddingStart="12dp"
+                    android:paddingTop="8dp"
+                    android:paddingEnd="12dp"
+                    android:paddingBottom="16dp" />
+
+                <LinearLayout
+                    android:id="@+id/emptyHistory"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:orientation="vertical"
+                    android:padding="32dp"
+                    android:visibility="gone">
+
+                    <ImageView
+                        android:layout_width="96dp"
+                        android:layout_height="96dp"
+                        android:alpha="0.35"
+                        android:src="@drawable/ic_scan"
+                        app:tint="@color/ferrari" />
+
+                    <TextView
+                        android:id="@+id/tvEmptyTitle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="12dp"
+                        android:text="Belum ada dokumen"
+                        android:textColor="@color/text_main"
+                        android:textSize="18sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/tvEmptySub"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="4dp"
+                        android:gravity="center"
+                        android:text="Hasil scan akan muncul di sini"
+                        android:textColor="@color/text_muted" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btnEmptyScan"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="16dp"
+                        android:text="Scan sekarang"
+                        app:icon="@drawable/ic_scan" />
+                </LinearLayout>
+            </FrameLayout>
         </LinearLayout>
-    </ScrollView>
-</LinearLayout>
+    </FrameLayout>
+
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/bottomNav"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:background="#FFFFFF"
+        app:itemIconTint="@color/ferrari"
+        app:itemTextColor="@color/text_main"
+        app:menu="@menu/bottom_nav" />
+</androidx.coordinatorlayout.widget.CoordinatorLayout>
